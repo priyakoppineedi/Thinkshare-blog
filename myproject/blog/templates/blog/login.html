@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+        }
+        article {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #012f5f;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .text-muted {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .text-muted a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <h2>Login</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div>
+                {{ form.as_p }}
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div class="text-muted">
+            <small>Don't have an account? <a href="{% url 'register' %}">Sign up</a></small>
+        </div>
+        <div style="text-align:center; margin-top: 20px;">
+            <a href="{% url 'blog-home' %}">Cancel</a>
+        </div>
+    </article>
+</body>
+</html>

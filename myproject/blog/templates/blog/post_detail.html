@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        article {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #012f5f;
+            color: white;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+        }
+        .article-title {
+            font-size: 24px;
+            margin: 0;
+        }
+        .article-content {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-top: 20px;
+            word-wrap: break-word;
+        }
+        .likes {
+            font-size: 16px;
+            color: white;
+        }
+        .article-meta {
+            font-size: 14px;
+            color: white;
+            margin-top: 10px;
+        }
+        .like-button {
+            padding: 8px 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .like-button:hover {
+            background-color: #218838;
+        }
+        .comments-section {
+            margin-top: 20px;
+        }
+        .comments-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .comments-section li {
+            margin: 5px 0;
+        }
+        .comment-form {
+            margin-top: 15px;
+        }
+        a {
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .edit-button, .delete-button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .edit-button {
+            background-color: #ffc107; /* Yellow */
+            color: white;
+        }
+        .edit-button:hover {
+            background-color: #e0a800; /* Darker yellow */
+        }
+        .delete-button {
+            background-color: #dc3545; /* Red */
+            color: white;
+        }
+        .delete-button:hover {
+            background-color: #c82333; /* Darker red */
+        }
+        .edit-delete-buttons {
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <article>
+        <a href="{% url 'blog-home' %}">Home</a>
+        {% block content %}
+        <div class="article-header">
+            <div>
+                <h1 class="article-title">{{ post.title }}</h1>
+                <p class="article-meta">Posted by {{ post.author }} on {{ post.date_posted|date:"F d, Y" }}</p>
+            </div>
+            <div>
+                <p class="likes">{{ total_likes }} Likes</p>
+                <div class="likes">
+                    {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'like-post' post.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="like-button">
+                            {% if is_liked %}
+                                Unlike
+                            {% else %}
+                                Like
+                            {% endif %}
+                        </button>
+                    </form>
+                    {% else %}
+                    <p><a href="{% url 'login' %}?next={% url 'post-detail' post.pk %}" style="color:#69ff89">Log in</a> to like this post.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <p class="article-content">{{ post.content|linebreaks }}</p>
+
+        <!-- Comments Section -->
+        <div class="comments-section">
+            <h2>Comments</h2>
+            <ul>
+                {% for comment in comments %}
+                <li><strong>{{ comment.author }}:</strong> {{ comment.content }}</li>
+                {% empty %}
+                <li>No comments yet.</li>
+                {% endfor %}
+            </ul>
+
+            {% if user.is_authenticated %}
+            <form method="POST" class="comment-form">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit" class="like-button">Post Comment</button>
+            </form>
+            {% else %}
+            <p><a href="{% url 'login' %}">Log in</a> to post a comment.</p>
+            {% endif %}
+        </div>
+        {% endblock content %}
+
+        <div class="edit-delete-buttons">
+            {% if request.user == post.author %}
+            <a href="{% url 'post-update' post.pk %}" class="edit-button">Edit Post</a>
+            {% endif %}
+            {% if post.author == user %}
+            <a class="delete-button" href="{% url 'post-delete' post.pk %}">Delete</a>
+            {% endif %}
+        </div>
+    </article>
+</body>
+</html>
