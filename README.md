@@ -11,10 +11,10 @@ The application is built using Django and includes functionality to manage user 
 ## Screenshots
 
 ### Home Page
-![Home Page](images/home-page.png)
+![Home Page](Images/home-page)
 
 ### Post Detail Page
-![Post Detail Page](images/post-detail-page.png)
+![Post Detail Page](Images/post-detail-page.png)
 
 ## Features
 
